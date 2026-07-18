@@ -1,6 +1,3 @@
-# =========================================
-# Stage: Development (Vite React.js App)
-# =========================================
 ARG NODE_VERSION=24.14.0-alpine
  
 FROM node:${NODE_VERSION} AS dev
@@ -11,12 +8,12 @@ COPY package*.json ./
  
 RUN npm install
  
-COPY . .
- 
-RUN chown -R node:node /app
+COPY --chown=node:node . .
+
+RUN npm run build
  
 USER node
  
-EXPOSE 5173
+EXPOSE 3000
  
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:prod"]
