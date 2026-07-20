@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { rootService } from "./api/root";
+import { userService } from "./api/users";
 import "./App.css";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
@@ -20,7 +21,9 @@ function App() {
 
     const testApi = async () => {
       const res = await rootService.getRoot();
+      const users = await userService.getUsers();
       console.log(res.data);
+      console.log(users.data);
     };
 
     test();

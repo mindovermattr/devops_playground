@@ -2,20 +2,26 @@ services:
   frontend:
     build:
       context: ./client
-      target: runner
+      target: dev
     ports:
       - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
 
   backend:
     build:
       context: ./server
-      target: runner
+      target: dev
     ports:
       - "3000:3000"
     env_file:
       - ./server/.env.docker
     depends_on:
       - db
+    volumes:
+      - ./server:/app
+      - /app/node_modules
 
   db:
     image: postgres:17
