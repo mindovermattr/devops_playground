@@ -1,14 +1,17 @@
 ARG NODE_VERSION=24.14.0-alpine
 
-#development stage
-
-FROM node:${NODE_VERSION} AS dev
+FROM node:${NODE_VERSION} AS deps
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN --mount=type=cache,target=/root/.npm npm ci
+RUN --mount=type=cache,id=npm,target=/root/.npm \
+    npm ci
+
+# development stage
+
+FROM deps AS dev
 
 COPY . .
 
@@ -16,13 +19,7 @@ CMD ["npm", "run", "dev"]
 
 # build stage
  
-FROM node:${NODE_VERSION} AS builder
- 
-WORKDIR /app
- 
-COPY package*.json ./
-
-RUN --mount=type=cache,target=/root/.npm npm ci
+FROM deps AS builder
 
 COPY . .
 

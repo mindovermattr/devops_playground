@@ -1,32 +1,33 @@
 ARG NODE_VERSION=24.14.0-alpine
 
-FROM node:${NODE_VERSION} AS dev
- 
-WORKDIR /app
- 
-COPY package*.json ./
- 
-RUN --mount=type=cache,target=/root/.npm npm ci
+#deps stage
 
+FROM node:${NODE_VERSION} AS deps
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN --mount=type=cache,id=npm,target=/root/.npm \
+    npm ci
+
+#dev
+
+FROM deps AS dev
+ 
 COPY . .
   
 CMD ["npm", "run", "dev"]
 
 # build
  
-FROM node:${NODE_VERSION} AS builder
+FROM deps AS builder
  
-WORKDIR /app
- 
-COPY package*.json ./
- 
-RUN --mount=type=cache,target=/root/.npm npm ci
-
 COPY . .
   
 RUN npm run build
 
-#runner stage
+# runner stage
 
 FROM node:${NODE_VERSION} AS runner
 
