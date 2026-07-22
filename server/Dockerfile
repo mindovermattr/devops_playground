@@ -15,7 +15,7 @@ FROM deps AS dev
 
 COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start:dev"]
 
 # build stage
  

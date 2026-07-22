@@ -15,7 +15,6 @@ function App() {
       const rest = await axios.get(
         "https://jsonplaceholder.typicode.com/todos/1",
       );
-      console.log(rest.data);
       return rest.data;
     };
 
