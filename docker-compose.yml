@@ -1,10 +1,18 @@
 services:
-  frontend:
+  #frontend:
+  #  build:
+  #    context: ./client
+  #    target: runner
+  #  ports:
+  #    - "5173:5173"
+  nginx:
     build:
-      context: ./client
-      target: runner
+      context: .
+      dockerfile: .nginx/Dockerfile
     ports:
-      - "5173:5173"
+      - "80:80"
+    depends_on:
+      - backend
 
   backend:
     build:
@@ -22,6 +30,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
 
   db:
     image: postgres:17
@@ -38,6 +47,19 @@ services:
       retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  migrate:
+    build:
+      context: ./server
+      target: migration
+    command: npm run db:migrate
+    env_file:
+      - ./server/.env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:

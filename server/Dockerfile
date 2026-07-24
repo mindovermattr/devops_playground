@@ -27,6 +27,14 @@ RUN npm run build
 
 RUN npm prune --omit=dev
 
+#migration
+
+FROM deps AS migration
+
+COPY . .
+
+CMD ["npm", "run", "db:migrate"]
+
 # runner
 
 FROM node:${NODE_VERSION} AS runner
