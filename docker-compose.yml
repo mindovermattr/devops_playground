@@ -6,9 +6,13 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend-1
-      - backend-2
-      
+      db:
+        condition: service_healthy
+      backend-1:
+        condition: service_healthy
+      backend-2:
+        condition: service_healthy
+
   backend-1:
     build:
       context: ./server
@@ -70,10 +74,6 @@ services:
       - ./server/.env.docker
     depends_on:
       db:
-        condition: service_healthy
-      backend-1:
-        condition: service_healthy
-      backend-2:
         condition: service_healthy
 
 volumes:
